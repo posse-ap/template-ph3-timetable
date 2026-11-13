@@ -9,6 +9,7 @@
     "typecheck": "tsc -b",
     "w01": "node src/w01/main.ts",
     "w02": "node src/w02/main.ts",
+    "w05": "node src/w05/check-api.ts",
     "lint": "oxlint",
     "preview": "vite preview"
   },
