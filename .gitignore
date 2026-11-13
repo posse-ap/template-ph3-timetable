@@ -3,7 +3,7 @@
 .idea/
 .env
 .playwright-cli/
-src/vendor/
-src/node_modules/
-src/.env
-src/database/*.sqlite
+api/vendor/
+api/node_modules/
+api/.env
+api/database/*.sqlite
