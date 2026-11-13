@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b",
     "w01": "node src/w01/main.ts",
+    "w02": "node src/w02/main.ts",
     "lint": "oxlint",
     "preview": "vite preview"
   },
