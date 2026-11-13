@@ -1,3 +1,5 @@
+/// <reference types="node" />
+// （上の1行は、このファイルだけ Node.js の process を使うための型の読み込み。画面のコードには要らない）
 // W5：自分の Laravel が返す /api/courses を本物の fetch で取り、W2 の isCourse に通す（このファイルは書き換えない）
 // 動かし方：リポジトリの一番上で docker compose up -d をしてから、front/ で pnpm w05
 import { isCourse } from "../w02/api.ts";
@@ -14,16 +16,15 @@ function describe(value: unknown): string {
   if (typeof value === "string") return `文字 "${value}"`;
   return `${typeof value} ${JSON.stringify(value)}`;
 }
+// 列を1つずつ差し替えて isCourse に聞くための、形の合った授業
+const validSample = { id: 1, code: "CS101", name: "プログラミング入門", teacher: null, day: 1, period: 1, room: "J101", credits: 2, required: true };
 function reasons(item: unknown): string[] {
   if (typeof item !== "object" || item === null) return [`授業がオブジェクトではない（${describe(item)}）`];
-  const row = item as Record<string, unknown>;
+  const row: Record<string, unknown> = Object.fromEntries(Object.entries(item));
   return Object.keys(want)
     .filter((key) => !isCourse({ ...validSample, [key]: row[key] }))
     .map((key) => (key in row ? `${key} が ${describe(row[key])}（ほしいのは${want[key]}）` : `${key} がない`));
 }
-// 列を1つずつ差し替えて isCourse に聞くための、形の合った授業
-const validSample = { id: 1, code: "CS101", name: "プログラミング入門", teacher: null, day: 1, period: 1, room: "J101", credits: 2, required: true };
-
 let response: Response;
 try {
   response = await fetch(url, { headers: { Accept: "application/json" } });
@@ -33,13 +34,19 @@ try {
 }
 console.log(`GET ${url} → ${response.status}`);
 const body: unknown = await response.json().catch(() => null);
-if (typeof body !== "object" || body === null || !("data" in body) || !Array.isArray(body.data)) {
-  console.log("本文が { \"data\": [ ... ] } の形ではありませんでした");
+// { "data": [ ... ] } で包まれていればその中身を、配列がそのまま届いたら配列を、授業の並びとして見る
+const items: unknown[] | null = Array.isArray(body)
+  ? body
+  : typeof body === "object" && body !== null && "data" in body && Array.isArray(body.data) ? body.data : null;
+const wrapped = items !== null && !Array.isArray(body);
+console.log(`data で包まれているか：${wrapped ? "はい" : "いいえ"}`);
+if (items === null) {
+  console.log("本文が授業の配列でも { \"data\": [ ... ] } でもありませんでした");
   console.log(JSON.stringify(body)?.slice(0, 300));
   process.exit(1);
 }
-const bad = body.data.filter((item) => !isCourse(item));
-console.log(`届いた授業：${body.data.length}件`);
+const bad = items.filter((item) => !isCourse(item));
+console.log(`届いた授業：${items.length}件`);
 console.log(`合わなかった授業：${bad.length}件`);
 for (const item of bad.slice(0, 10)) {
   const id = typeof item === "object" && item !== null && "id" in item ? item.id : "?";
