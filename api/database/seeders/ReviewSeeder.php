@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 
 class ReviewSeeder extends Seeder
 {
-    // 学生3人と、その人たちが書いたレビュー10件。W6 で授業の詳細に出す
+    // 学生3人と、その人たちが書いたレビュー12件。W6 で授業の詳細に出す（最後の2件は W10 で使う）
     private const STUDENTS = [
         'student1@example.com' => '青木 さくら',
         'student2@example.com' => '内田 蓮',
@@ -27,6 +27,10 @@ class ReviewSeeder extends Seeder
         ['LA150', 'student3@example.com', '小テストが毎週あるので、ためずに進められました。'],
         ['PG220', 'student1@example.com', '自分で作った画面を毎週見せ合うので、ほかの人の工夫が参考になります。'],
         ['ST201', 'student2@example.com', '例が身近なデータばかりで、数式が苦手でも追いかけやすかったです。'],
+        // W10：改行を含むレビュー。画面でも改行して出したい
+        ['SE240', 'student1@example.com', "グループで作る課題が2回あります。\n1回目は設計、2回目は実装です。\n早めにメンバーと役割を決めておくと楽です。"],
+        // W10：HTML のタグを含むレビュー。タグは文字のまま出るのが正しい（HTML として出すと、取り消し線と太字になってしまう）
+        ['UX250', 'student3@example.com', '<s>出席は取りません</s>と聞いていましたが、毎回取るようになりました。<b>遅刻3回で欠席1回</b>です。'],
     ];
 
     public function run(): void
