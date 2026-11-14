@@ -10,10 +10,8 @@ export default defineConfig({
     // 画面と API が同じオリジンに見えるので、fetch("/api/courses") のように URL の頭を書かずに呼べる
     proxy: {
       '/api': 'http://localhost:8080',
-      // ここから下の3つは W9（ログイン）で使う
+      // W9（ログイン）で使う。CSRF のトークンを Cookie に入れてもらう /sanctum/csrf-cookie
       '/sanctum': 'http://localhost:8080',
-      '/login': 'http://localhost:8080',
-      '/logout': 'http://localhost:8080',
     },
   },
 })
