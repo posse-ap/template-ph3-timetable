@@ -30,6 +30,9 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            // W11：列の既定値（false）をモデルにも入れておく。入れないと、create() したばかりのモデルでは is_admin が null になり、
+            // bool を返すポリシー（CoursePolicy）が型のエラーで 500 になる
+            'is_admin' => false,
         ];
     }
 
@@ -40,6 +43,16 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * W11：教務課の職員（is_admin が真）。User::factory()->admin()->create() のように使う
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_admin' => true,
         ]);
     }
 }
