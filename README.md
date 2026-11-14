@@ -34,6 +34,13 @@ docker compose exec db createdb -U posse -T timetable timetable_test
 
 最後の行は、テスト用のデータベース `timetable_test` を開発用の `timetable` から複製するコマンドです。psql で `timetable` に接続していると複製できないので、先に閉じてから実行してください。
 
+テスト用のデータベースを作り直したいとき（テストに `RefreshDatabase` を使って `relation "courses" does not exist` と出たときなど）は、テスト用の `timetable_test` だけを消してから、もう一度複製します。開発用の `timetable` は消えません。
+
+```bash
+docker compose exec db dropdb -U posse --if-exists timetable_test
+docker compose exec db createdb -U posse -T timetable timetable_test
+```
+
 | URL | 中身 |
 |---|---|
 | http://localhost:8080 | 時間割アプリ（PH2 の完成時点の画面） |
