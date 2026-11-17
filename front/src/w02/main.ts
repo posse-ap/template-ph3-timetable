@@ -1,5 +1,5 @@
 // 4つの偽の fetch で loadCourses を呼び、結果を出す（このファイルは書き換えない）
-import { formatCourse } from "../w01/timetable.ts";
+import { formatCourse, type Course } from "../w01/timetable.ts";
 import { loadCourses, type LoadResult } from "./api.ts";
 import { fetchOk, fetchBroken, fetchServerError, fetchNetworkError } from "./fake-api.ts";
 
@@ -9,7 +9,7 @@ function show(label: string, result: LoadResult): void {
     console.log(`${result.courses.length}件の授業を読み込みました`);
     // 月曜の1限から5限までを、時限ごとに探して並べる
     for (const period of [1, 2, 3, 4, 5]) {
-      const found = result.courses.filter((course) => course.day === 1 && course.period === period);
+      const found = result.courses.filter((course: Course) => course.day === 1 && course.period === period);
       if (found.length === 0) console.log(`月${period} （授業なし）`);
       for (const course of found) console.log(formatCourse(course));
     }
